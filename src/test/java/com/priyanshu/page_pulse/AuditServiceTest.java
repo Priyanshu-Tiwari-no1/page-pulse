@@ -9,31 +9,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 
 @SpringBootTest
-public class AuditServiceTest {
-
+class AuditServiceTest {
 
     @Autowired
     private AuditService auditService;
 
+    @BeforeEach
+    void setup() {
+        auditService.clearCache();
+    }
 
     @Test
     void testAuditGoogle() {
 
-        AuditResponse response =
-                auditService.audit("https://google.com");
+        AuditResponse response = auditService.audit("https://google.com");
 
+        System.out.println("Cached = " + response.isCached());
 
         assertNotNull(response);
-
-        assertEquals(
-                200,
-                response.getStatusCode()
-        );
-
-        assertFalse(
-                response.isCached()
-        );
+        assertEquals(200, response.getStatusCode());
+        assertFalse(response.isCached());
     }
 }
