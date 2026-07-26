@@ -1,64 +1,57 @@
-# Page Pulse
+# Page Pulse 🚀
 
-Page Pulse is a Spring Boot web application that audits websites by checking their availability, response time, HTTP status, and page title. It also uses an in-memory cache to improve performance.
+Page Pulse is a production-grade Spring Boot URL auditing service that checks website availability, response time, HTTP status code, and page title.
 
-## Features
+The application is designed with caching, rate limiting, input validation, structured error handling, automated testing, and CI/CD support.
+
+---
+
+# Live Demo
+
+https://page-pulse-t55w.onrender.com
+
+
+---
+
+# Features
 
 - Audit any website URL
-- Fetch HTTP status code
+- Check HTTP status code
 - Measure response time
-- Extract page title
-- In-memory caching
+- Extract HTML page title
+- Configurable in-memory caching
+- Cache response reuse for repeated requests
+- Client IP based rate limiting
+- Request timeout handling
+- URL input validation
+- Structured error responses
+- Request ID based logging
 - REST API
-- Unit Tests with JUnit
-- GitHub Actions CI
+- JUnit 5 test suite
+- GitHub Actions CI/CD
+- Docker deployment
 
-## Tech Stack
+
+---
+
+# Tech Stack
 
 - Java 17
-- Spring Boot
+- Spring Boot 4
+- Spring Web MVC
 - Maven
 - JUnit 5
 - GitHub Actions
+- Docker
+- Render Cloud
 
-## Run Locally
 
-```bash
-git clone https://github.com/Priyanshu-Tiwari-no1/page-pulse.git
-cd page-pulse
-./mvnw spring-boot:run
-```
+---
 
-## Run Tests
+# API Documentation
 
-```bash
-./mvnw test
-```
 
-## API
+## Audit Website URL
 
-Example:
 
-```
-GET /audit?url=https://google.com
-```
-
-Example Response
-
-```json
-{
-  "url": "https://google.com",
-  "statusCode": 200,
-  "responseTime": 120,
-  "title": "Google",
-  "cached": false
-}
-```
-
-## CI
-
-GitHub Actions automatically builds and tests the project on every push.
-
-## Author
-
-Priyanshu Tiwari
+### Endpoint
