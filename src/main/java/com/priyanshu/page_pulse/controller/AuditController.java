@@ -8,9 +8,15 @@ import com.priyanshu.page_pulse.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 
 @RestController
@@ -21,6 +27,10 @@ public class AuditController {
     private final AuditService auditService;
 
     private final RateLimitService rateLimitService;
+
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(AuditController.class);
 
 
 
@@ -40,14 +50,24 @@ public class AuditController {
             HttpServletRequest httpRequest) {
 
 
+        String requestId =
+                UUID.randomUUID().toString();
 
-        // Get client IP
+
         String clientIp =
                 httpRequest.getRemoteAddr();
 
 
 
-        // Rate limit check
+        logger.info(
+                "REQUEST_START id={} ip={} url={}",
+                requestId,
+                clientIp,
+                request.getUrl()
+        );
+
+
+
         boolean allowed =
                 rateLimitService.allowRequest(clientIp);
 
@@ -55,19 +75,27 @@ public class AuditController {
 
         if(!allowed){
 
+
+            logger.warn(
+                    "RATE_LIMIT_BLOCK id={} ip={}",
+                    requestId,
+                    clientIp
+            );
+
+
             return ResponseEntity
                     .status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(
-                            "Rate limit exceeded. Try again later."
+                            Map.of(
+                                    "requestId",requestId,
+                                    "error",
+                                    "RATE_LIMIT_EXCEEDED",
+                                    "message",
+                                    "Too many requests"
+                            )
                     );
         }
 
-
-
-        System.out.println(
-                "Audit request received from IP: "
-                + clientIp
-        );
 
 
 
@@ -77,7 +105,17 @@ public class AuditController {
                 );
 
 
+
+        logger.info(
+                "REQUEST_END id={} status={}",
+                requestId,
+                response.getStatusCode()
+        );
+
+
+
         return ResponseEntity.ok(response);
+
     }
 
 }
